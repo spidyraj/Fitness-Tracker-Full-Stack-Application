@@ -139,6 +139,7 @@ services:
       - "8085:8085"
     environment:
       GROQ_API_KEY: ${GROQ_API_KEY}
+      JWT_SECRET: ${JWT_SECRET}
       REDIS_HOST: redis
       REDIS_PORT: 6379
       MONGODB_URI: mongodb://fitness_user:fitness_pass@mongodb:27017/fitness_ai_logs?authSource=admin
