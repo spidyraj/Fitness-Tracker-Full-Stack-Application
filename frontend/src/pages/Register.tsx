@@ -27,8 +27,13 @@ const Register = () => {
     try {
       await api.post('/auth/register', formData);
       navigate('/login');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Try a different email.');
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response?: { data?: { message?: string } } };
+        setError(axiosError.response?.data?.message || 'Registration failed. Try a different email.');
+      } else {
+        setError('Registration failed. Try a different email.');
+      }
     } finally {
       setLoading(false);
     }

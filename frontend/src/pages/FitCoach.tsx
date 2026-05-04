@@ -63,7 +63,7 @@ const FitCoach = () => {
       <div className="page-header">
         <div>
           <h1>FitCoach AI</h1>
-          <p className="subtitle">Your elite personal trainer powered by Groq Llama 3</p>
+          <p className="subtitle">Your elite personal trainer powered by Groq Llama 3.1</p>
         </div>
       </div>
 

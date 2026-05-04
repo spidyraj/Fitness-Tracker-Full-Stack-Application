@@ -49,6 +49,7 @@ jobs:
           cache: maven
 
       - name: Create test environment file
+        working-directory: backend
         run: |
           cat > .env << EOF
           DB_URL=jdbc:postgresql://localhost:5432/fitness_db
@@ -65,11 +66,13 @@ jobs:
           EOF
 
       - name: Run unit tests
+        working-directory: backend
         run: mvn test -pl workout-service -am --no-transfer-progress
         env:
           SPRING_PROFILES_ACTIVE: test
 
       - name: Run integration tests (Testcontainers)
+        working-directory: backend
         run: mvn verify -pl workout-service -am -Pintegration-tests --no-transfer-progress
         env:
           SPRING_PROFILES_ACTIVE: test
@@ -80,7 +83,7 @@ jobs:
         if: always()
         with:
           name: JUnit Test Results
-          path: '**/target/surefire-reports/*.xml'
+          path: 'backend/**/target/surefire-reports/*.xml'
           reporter: java-junit
 
   # ─── Job 2: Code Quality ────────────────────────────────────────────────────
@@ -103,10 +106,12 @@ jobs:
           cache: maven
 
       - name: Compile all modules
+        working-directory: backend
         run: mvn compile --no-transfer-progress -DskipTests
 
       # Uncomment and add SONAR_TOKEN secret to enable SonarCloud
       # - name: SonarCloud Analysis
+      #   working-directory: backend
       #   run: mvn sonar:sonar -Dsonar.projectKey=fitness-tracker
       #   env:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -160,8 +165,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ${{ matrix.service.name }}/Dockerfile
+          context: backend
+          file: backend/${{ matrix.service.name }}/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

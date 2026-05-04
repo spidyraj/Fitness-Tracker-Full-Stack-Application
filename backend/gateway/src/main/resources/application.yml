@@ -19,7 +19,7 @@ spring:
             allowedHeaders: "*"
       routes:
         - id: user-service
-          uri: http://localhost:8081
+          uri: ${USER_SERVICE_URL:http://localhost:8081}
           predicates:
             - Path=/api/auth/**, /api/users/**
           filters:
@@ -31,7 +31,7 @@ spring:
                 key-resolver: "#{@ipKeyResolver}"
         
         - id: workout-service
-          uri: http://localhost:8082
+          uri: ${WORKOUT_SERVICE_URL:http://localhost:8082}
           predicates:
             - Path=/api/workouts/**
           filters:
@@ -44,7 +44,7 @@ spring:
                 key-resolver: "#{@ipKeyResolver}"
         
         - id: nutrition-service
-          uri: http://localhost:8083
+          uri: ${NUTRITION_SERVICE_URL:http://localhost:8083}
           predicates:
             - Path=/api/nutrition/**
           filters:
@@ -57,7 +57,7 @@ spring:
                 key-resolver: "#{@ipKeyResolver}"
             
         - id: analytics-service
-          uri: http://localhost:8084
+          uri: ${ANALYTICS_SERVICE_URL:http://localhost:8084}
           predicates:
             - Path=/api/analytics/**
           filters:
@@ -70,7 +70,7 @@ spring:
                 key-resolver: "#{@ipKeyResolver}"
 
         - id: ai-service
-          uri: http://localhost:8085
+          uri: ${AI_SERVICE_URL:http://localhost:8085}
           predicates:
             - Path=/api/ai/**
           filters:

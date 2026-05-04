@@ -10,3 +10,6 @@ node_modules/
 .idea/
 *.iml
 .vscode/
+
+# Local dev overrides with secrets
+application-local.properties

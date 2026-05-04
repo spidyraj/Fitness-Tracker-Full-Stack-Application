@@ -55,7 +55,7 @@ class GroqServiceWireMockTest {
                 aiLogRepository,
                 "test-api-key",
                 "http://localhost:" + wireMockServer.port() + "/openai/v1/chat/completions",
-                "llama3-8b-8192"
+                "llama-3.1-8b-instant"
         );
     }
 

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&family=Bebas+Neue&family=Montserrat:wght@400;500;600;700&display=swap');
 
 :root {
   /* Premium Dark Mode Colors */
@@ -13,6 +13,9 @@
   --accent-blue: #3b82f6;
   --accent-green: #10b981;
   --accent-purple: #8b5cf6;
+  --purple: #875AF1;
+  --purple-lt: #a07cf5;
+  --purple-dk: #6340c8;
   --danger: #ef4444;
 
   --border-light: rgba(255, 255, 255, 0.1);
@@ -21,6 +24,8 @@
 
   --font-sans: 'Inter', sans-serif;
   --font-display: 'Outfit', sans-serif;
+  --font-head: 'Bebas Neue', sans-serif;
+  --font-body: 'Montserrat', sans-serif;
 }
 
 * {

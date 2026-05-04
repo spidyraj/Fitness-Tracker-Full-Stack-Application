@@ -93,8 +93,21 @@ public class GroqService {
                     return Mono.just("I'm unable to generate advice right now. Please try again.");
                 })
                 .onErrorResume(ex -> {
-                    System.err.println("Groq API error: " + ex.getMessage());
-                    return Mono.just("AI service is temporarily unavailable. Your workouts are saved!");
+                    // Log full error to help diagnose local dev issues
+                    System.err.println("[FitCoach] Groq API error: " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
+                    ex.printStackTrace();
+                    
+                    String errorType = ex.getClass().getSimpleName();
+                    if (ex.getMessage() != null && ex.getMessage().contains("401")) {
+                        return Mono.just("Invalid API key. Please check the GROQ_API_KEY environment variable.");
+                    } else if (ex.getMessage() != null && ex.getMessage().contains("429")) {
+                        return Mono.just("Rate limit reached. Please wait a moment and try again.");
+                    } else if (errorType.equals("TimeoutException") || errorType.contains("Timeout")) {
+                        return Mono.just("The AI request timed out. Groq might be busy — try again in a moment.");
+                    } else if (ex.getMessage() != null && ex.getMessage().contains("Connection refused")) {
+                        return Mono.just("Cannot reach the Groq API. Please check your internet connection.");
+                    }
+                    return Mono.just("FitCoach encountered an error: " + ex.getMessage());
                 });
     }
 
