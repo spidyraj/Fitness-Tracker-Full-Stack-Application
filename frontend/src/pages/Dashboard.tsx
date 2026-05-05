@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { Flame, Dumbbell, Apple, Clock, TrendingUp, Plus, ChevronRight } from 'lucide-react';
+import { Flame, Dumbbell, Apple, Clock, TrendingUp, Plus, ChevronRight, Target, Activity } from 'lucide-react';
 import { DashboardSkeleton } from '../components/LoadingSkeleton';
+import ProgressChart from '../components/ProgressChart';
 import api from '../services/api';
 import './Dashboard.css';
 
@@ -143,6 +144,45 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Progress Charts Section */}
+      <div className="progress-section">
+        <h2 className="section-title">Your Progress 📊</h2>
+        <div className="progress-grid">
+          <ProgressChart
+            value={summary?.totalWorkouts || 0}
+            max={20} // Monthly goal
+            label="Monthly Workouts"
+            icon={Target}
+            color="#8b5cf6"
+            unit="sessions"
+          />
+          <ProgressChart
+            value={summary?.totalCaloriesBurned || 0}
+            max={10000} // Monthly goal
+            label="Calories Burned"
+            icon={Flame}
+            color="#ef4444"
+            unit="kcal"
+          />
+          <ProgressChart
+            value={Math.round((summary?.totalDurationMinutes || 0) / 60)}
+            max={20} // Monthly goal in hours
+            label="Active Hours"
+            icon={Activity}
+            color="#06b6d4"
+            unit="hrs"
+          />
+          <ProgressChart
+            value={Math.round((summary?.totalCaloriesConsumed || 0) / 100)}
+            max={100} // Percentage of daily goal
+            label="Nutrition Score"
+            icon={Apple}
+            color="#10b981"
+            unit="%"
+          />
+        </div>
       </div>
 
       {/* Main content two columns */}

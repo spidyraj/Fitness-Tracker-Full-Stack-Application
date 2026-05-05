@@ -7,7 +7,7 @@ import { LogIn, Eye, EyeOff, Shield, Zap, TrendingUp } from 'lucide-react';
 import EnhancedButton from '../components/EnhancedButton';
 import './EnhancedAuth.css';
 
-const Login = () => {
+const EnhancedLogin = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -177,4 +177,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default EnhancedLogin;
