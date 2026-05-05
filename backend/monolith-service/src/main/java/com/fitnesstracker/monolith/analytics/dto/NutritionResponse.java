@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 public record NutritionResponse(
         Long id,
         Long userId,
-        String mealName,
+        String foodName,
         String mealType,
         Integer calories,
-        Double proteinGrams,
-        Double carbsGrams,
-        Double fatGrams,
+        Double protein,
+        Double carbs,
+        Double fats,
         LocalDateTime logDate
 ) {}
