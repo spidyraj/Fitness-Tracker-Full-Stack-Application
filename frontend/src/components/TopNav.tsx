@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Dumbbell, Apple, Bot, LogOut, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, Dumbbell, Apple, Bot, User, LogOut, ChevronDown } from 'lucide-react';
 import './TopNav.css';
 
 const TopNav: React.FC = () => {
@@ -37,6 +37,10 @@ const TopNav: React.FC = () => {
           <NavLink to="/coach" className={({ isActive }) => `tn-link ${isActive ? 'active' : ''}`}>
             <Bot size={16} />
             AI Coach
+          </NavLink>
+          <NavLink to="/profile" className={({ isActive }) => `tn-link ${isActive ? 'active' : ''}`}>
+            <User size={16} />
+            Profile
           </NavLink>
         </nav>
 

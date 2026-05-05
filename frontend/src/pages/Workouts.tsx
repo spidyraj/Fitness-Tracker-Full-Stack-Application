@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Activity, Flame, Clock } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
+import WorkoutAnimations from '../components/WorkoutAnimations';
+import EnhancedButton from '../components/EnhancedButton';
 import './Workouts.css';
 
 interface Workout {

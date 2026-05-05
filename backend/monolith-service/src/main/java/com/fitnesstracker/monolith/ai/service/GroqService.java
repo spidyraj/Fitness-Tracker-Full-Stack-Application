@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
+@org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name = "groq.api.key", matchIfMissing = false)
 public class GroqService {
 
     private final WebClient webClient;
@@ -25,13 +26,12 @@ public class GroqService {
 
     public GroqService(
             WebClient.Builder webClientBuilder,
-            AiLogRepository aiLogRepository,
             @Value("${groq.api.key}") String apiKey,
             @Value("${groq.api.url}") String apiUrl,
-            @Value("${groq.api.model}") String model) {
-
+            @Value("${groq.api.model}") String model
+    ) {
         this.webClient = webClientBuilder.build();
-        this.aiLogRepository = aiLogRepository;
+        this.aiLogRepository = null; // MongoDB optional
         this.apiKey = apiKey;
         this.apiUrl = apiUrl;
         this.model = model;
@@ -87,8 +87,14 @@ public class GroqService {
                 .flatMap(response -> {
                     if (response.choices() != null && !response.choices().isEmpty()) {
                         String aiResponse = response.choices().get(0).message().content();
-                        AiLogEntity log = new AiLogEntity(userId, prompt, aiResponse);
-                        return aiLogRepository.save(log).map(savedLog -> aiResponse);
+                        // Log to console if MongoDB is not available
+                        if (aiLogRepository != null) {
+                            AiLogEntity log = new AiLogEntity(userId, prompt, aiResponse);
+                            return aiLogRepository.save(log).map(savedLog -> aiResponse);
+                        } else {
+                            System.out.println("[FitCoach] AI Response for user " + userId + ": " + aiResponse);
+                            return Mono.just(aiResponse);
+                        }
                     }
                     return Mono.just("I'm unable to generate advice right now. Please try again.");
                 })

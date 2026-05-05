@@ -5,6 +5,7 @@ import { useToast } from '../context/ToastContext';
 import api from '../services/api';
 import { LogIn, Eye, EyeOff, Shield, Zap, TrendingUp } from 'lucide-react';
 import EnhancedButton from '../components/EnhancedButton';
+import GoogleOAuth from '../components/GoogleOAuth';
 import './EnhancedAuth.css';
 
 const Login = () => {
@@ -158,10 +159,7 @@ const Login = () => {
 
         {/* Social Login */}
         <div className="social-login">
-          <EnhancedButton variant="glass" size="md" className="social-btn">
-            <span className="social-icon">🔗</span>
-            Continue with Google
-          </EnhancedButton>
+          <GoogleOAuth />
         </div>
 
         {/* Footer */}

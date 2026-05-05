@@ -4,6 +4,7 @@ import com.fitnesstracker.monolith.ai.service.GroqService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/ai")
 @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+@ConditionalOnBean(GroqService.class)
 public class AiController {
 
     private final GroqService groqService;
