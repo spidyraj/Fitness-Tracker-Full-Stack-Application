@@ -5,7 +5,8 @@ import java.util.List;
 public record DailySummary(
         Long userId,
         Integer totalWorkouts,
-        Integer totalWorkoutMinutes,
+        Integer totalDurationMinutes,
+        Integer totalCaloriesBurned,
         Integer totalCaloriesConsumed,
         Double totalProteinGrams,
         Double totalCarbsGrams,

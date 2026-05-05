@@ -36,12 +36,26 @@ public class AnalyticsService {
         
         // Map to internal Analytics DTO (NutritionResponse)
         List<NutritionResponse> nutritionLogs = nutritionRaw.stream()
-                .map(n -> new NutritionResponse(n.id(), n.userId(), n.mealName(), n.mealType().name(), n.calories(), n.proteinGrams(), n.carbsGrams(), n.fatGrams(), n.logDate()))
+                .map(n -> new NutritionResponse(n.id(), n.userId(), n.foodName(), n.mealType().name(), n.calories(), n.protein(), n.carbs(), n.fats(), n.logDate()))
                 .collect(Collectors.toList());
 
         // Aggregate
         int totalWorkouts = workouts.size();
-        int totalWorkoutMinutes = workouts.stream().mapToInt(WorkoutResponse::durationMinutes).sum();
+        int totalDurationMinutes = workouts.stream().mapToInt(WorkoutResponse::durationMinutes).sum();
+
+        // Calculate estimated calories burned based on workout type and duration
+        int totalCaloriesBurned = workouts.stream()
+                .mapToInt(workout -> {
+                    int minutes = workout.durationMinutes() != null ? workout.durationMinutes() : 0;
+                    return switch (workout.type().toUpperCase()) {
+                        case "CARDIO" -> minutes * 10;  // ~10 cal/min for cardio
+                        case "STRENGTH" -> minutes * 6;  // ~6 cal/min for strength
+                        case "HIITS" -> minutes * 12;    // ~12 cal/min for HIIT
+                        case "FLEXIBILITY" -> minutes * 3; // ~3 cal/min for flexibility
+                        default -> minutes * 5;          // ~5 cal/min for other
+                    };
+                })
+                .sum();
 
         int totalCalories = 0;
         double totalProtein = 0.0;
@@ -50,15 +64,16 @@ public class AnalyticsService {
 
         for (NutritionResponse log : nutritionLogs) {
             totalCalories += log.calories() != null ? log.calories() : 0;
-            totalProtein += log.proteinGrams() != null ? log.proteinGrams() : 0.0;
-            totalCarbs += log.carbsGrams() != null ? log.carbsGrams() : 0.0;
-            totalFat += log.fatGrams() != null ? log.fatGrams() : 0.0;
+            totalProtein += log.protein() != null ? log.protein() : 0.0;
+            totalCarbs += log.carbs() != null ? log.carbs() : 0.0;
+            totalFat += log.fats() != null ? log.fats() : 0.0;
         }
 
         return new DailySummary(
                 userId,
                 totalWorkouts,
-                totalWorkoutMinutes,
+                totalDurationMinutes,
+                totalCaloriesBurned,
                 totalCalories,
                 totalProtein,
                 totalCarbs,

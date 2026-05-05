@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
+import ErrorBoundary from './components/ErrorBoundary';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -20,8 +22,10 @@ function App() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <Router>
-      <Routes>
+    <ErrorBoundary>
+      <ToastProvider>
+        <Router>
+          <Routes>
         {/* Public routes */}
         <Route path="/" element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />} />
         <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" replace />} />
@@ -60,8 +64,10 @@ function App() {
             </ProtectedRoute>
           }
         />
-      </Routes>
-    </Router>
+          </Routes>
+        </Router>
+      </ToastProvider>
+    </ErrorBoundary>
   );
 }
 

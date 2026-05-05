@@ -298,7 +298,39 @@
 }
 
 .db-balance-value.positive { color: var(--accent-green); }
-.db-balance-value.negative { color: #fb923c; }
+.db-balance-value.negative {
+  color: #ef4444;
+}
+
+/* Toast animations */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Loading skeleton animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
 
 /* Badges */
 .badge-sports { background: rgba(251, 146, 60, 0.2); color: #fb923c; }

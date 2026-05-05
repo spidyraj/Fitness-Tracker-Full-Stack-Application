@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { Plus, Trash2 } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
 import './Workouts.css';
 
 interface Workout {
@@ -16,6 +17,7 @@ const Workouts = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ title: '', type: 'CARDIO', durationMinutes: 30 });
+  const { showError, showSuccess } = useToast();
 
   useEffect(() => {
     fetchWorkouts();
@@ -25,8 +27,10 @@ const Workouts = () => {
     try {
       const response = await api.get('/workouts');
       setWorkouts(response.data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch workouts", error);
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch workouts';
+      showError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -38,18 +42,24 @@ const Workouts = () => {
       await api.post('/workouts', formData);
       setShowForm(false);
       setFormData({ title: '', type: 'CARDIO', durationMinutes: 30 });
+      showSuccess('Workout added successfully!');
       fetchWorkouts();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to add workout", error);
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to add workout';
+      showError(errorMessage);
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
       await api.delete(`/workouts/${id}`);
+      showSuccess('Workout deleted successfully!');
       fetchWorkouts();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to delete workout", error);
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to delete workout';
+      showError(errorMessage);
     }
   };
 

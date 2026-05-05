@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { Flame, Dumbbell, Apple, Clock, TrendingUp, Plus, ChevronRight } from 'lucide-react';
-import TopNav from '../components/TopNav';
-import ChatbotWidget from '../components/ChatbotWidget';
+import { DashboardSkeleton } from '../components/LoadingSkeleton';
 import api from '../services/api';
 import './Dashboard.css';
 
@@ -35,6 +35,7 @@ interface NutritionLog {
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { showError } = useToast();
 
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [recentWorkouts, setRecentWorkouts] = useState<Workout[]>([]);
@@ -52,14 +53,16 @@ const Dashboard: React.FC = () => {
         setSummary(sumRes.data);
         setRecentWorkouts((workRes.data as Workout[]).slice(0, 5));
         setRecentMeals((nutRes.data as NutritionLog[]).slice(0, 5));
-      } catch (err) {
+      } catch (err: any) {
         console.error('Dashboard fetch failed', err);
+        const errorMessage = err?.response?.data?.message || err?.message || 'Failed to load dashboard data';
+        showError(errorMessage);
       } finally {
         setLoadingSummary(false);
       }
     };
     fetch();
-  }, []);
+  }, [showError]);
 
   const greeting = () => {
     const h = new Date().getHours();
@@ -105,6 +108,10 @@ const Dashboard: React.FC = () => {
     FLEXIBILITY: 'badge-flexibility',
     SPORTS: 'badge-sports',
   };
+
+  if (loadingSummary) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <>
