@@ -24,12 +24,12 @@ public class NutritionService {
     public NutritionResponse logNutrition(Long userId, NutritionRequest request) {
         NutritionEntity entity = NutritionEntity.builder()
                 .userId(userId)
-                .mealName(request.mealName())
-                .mealType(request.mealType())
+                .mealName(request.foodName())
+                .mealType(request.mealType() != null ? request.mealType() : NutritionEntity.MealType.SNACK)
                 .calories(request.calories())
-                .proteinGrams(request.proteinGrams())
-                .carbsGrams(request.carbsGrams())
-                .fatGrams(request.fatGrams())
+                .proteinGrams(request.protein())
+                .carbsGrams(request.carbs())
+                .fatGrams(request.fat())
                 .logDate(request.logDate() != null ? request.logDate() : LocalDateTime.now())
                 .build();
 

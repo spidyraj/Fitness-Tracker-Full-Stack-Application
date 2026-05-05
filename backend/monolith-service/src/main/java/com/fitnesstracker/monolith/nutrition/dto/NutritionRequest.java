@@ -8,11 +8,11 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 public record NutritionRequest(
-        @NotBlank String mealName,
-        @NotNull MealType mealType,
+        @NotBlank String foodName,           // was mealName — now matches entity setter
+        MealType mealType,                   // no longer @NotNull; defaults in service
         @NotNull @PositiveOrZero Integer calories,
-        @PositiveOrZero Double proteinGrams,
-        @PositiveOrZero Double carbsGrams,
-        @PositiveOrZero Double fatGrams,
+        @PositiveOrZero Double protein,
+        @PositiveOrZero Double carbs,
+        @PositiveOrZero Double fat,
         LocalDateTime logDate
 ) {}
