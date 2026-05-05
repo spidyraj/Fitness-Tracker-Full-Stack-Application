@@ -19,7 +19,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <ErrorBoundary>
@@ -27,9 +27,9 @@ function App() {
         <Router>
           <Routes>
         {/* Public routes */}
-        <Route path="/" element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />} />
-        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" replace />} />
-        <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Navigate to={isAuthenticated && user ? '/dashboard' : '/login'} replace />} />
+        <Route path="/login" element={!isAuthenticated || !user ? <Login /> : <Navigate to="/dashboard" replace />} />
+        <Route path="/register" element={!isAuthenticated || !user ? <Register /> : <Navigate to="/dashboard" replace />} />
 
         {/* All protected app routes share the same AppLayout via the wrapper */}
         <Route

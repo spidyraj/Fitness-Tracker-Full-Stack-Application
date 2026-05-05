@@ -29,6 +29,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (storedToken && storedUser) {
       try {
+        // Basic token validation - check if it's a valid JWT format
+        const tokenParts = storedToken.split('.');
+        if (tokenParts.length !== 3) {
+          console.error('Invalid token format');
+          logout();
+          return;
+        }
+
+        // Check if token is expired (basic check)
+        try {
+          const payload = JSON.parse(atob(tokenParts[1]));
+          const currentTime = Date.now() / 1000;
+          if (payload.exp && payload.exp < currentTime) {
+            console.error('Token expired');
+            logout();
+            return;
+          }
+        } catch (e) {
+          console.error('Failed to parse token payload', e);
+          logout();
+          return;
+        }
+
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
       } catch (e) {
