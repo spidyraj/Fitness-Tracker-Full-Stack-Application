@@ -67,13 +67,13 @@ jobs:
 
       - name: Run unit tests
         working-directory: backend
-        run: mvn test -pl workout-service -am --no-transfer-progress
+        run: mvn test -pl monolith-service -am --no-transfer-progress
         env:
           SPRING_PROFILES_ACTIVE: test
 
       - name: Run integration tests (Testcontainers)
         working-directory: backend
-        run: mvn verify -pl workout-service -am -Pintegration-tests --no-transfer-progress
+        run: mvn verify -pl monolith-service -am -Pintegration-tests --no-transfer-progress
         env:
           SPRING_PROFILES_ACTIVE: test
         # Testcontainers needs Docker — GitHub Actions runners have Docker pre-installed
@@ -83,7 +83,7 @@ jobs:
         if: always()
         with:
           name: JUnit Test Results
-          path: 'backend/**/target/surefire-reports/*.xml'
+          path: 'backend/monolith-service/target/surefire-reports/*.xml'
           reporter: java-junit
 
   # ─── Job 2: Code Quality ────────────────────────────────────────────────────
@@ -107,7 +107,7 @@ jobs:
 
       - name: Compile all modules
         working-directory: backend
-        run: mvn compile --no-transfer-progress -DskipTests
+        run: mvn compile -pl monolith-service -am --no-transfer-progress -DskipTests
 
       # Uncomment and add SONAR_TOKEN secret to enable SonarCloud
       # - name: SonarCloud Analysis
@@ -122,22 +122,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
-    strategy:
-      matrix:
-        service:
-          - name: user-service
-            port: 8081
-          - name: workout-service
-            port: 8082
-          - name: nutrition-service
-            port: 8083
-          - name: analytics-service
-            port: 8084
-          - name: ai-service
-            port: 8085
-          - name: gateway
-            port: 8080
 
     steps:
       - name: Checkout source code
@@ -154,7 +138,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMAGE_PREFIX }}-${{ matrix.service.name }}
+          images: ${{ env.IMAGE_PREFIX }}-monolith
           tags: |
             type=sha,prefix=
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
@@ -166,7 +150,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: backend
-          file: backend/${{ matrix.service.name }}/Dockerfile
+          file: backend/monolith-service/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
