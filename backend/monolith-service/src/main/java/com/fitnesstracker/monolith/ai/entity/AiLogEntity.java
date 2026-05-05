@@ -1,22 +1,17 @@
 package com.fitnesstracker.monolith.ai.entity;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.time.LocalDateTime;
 
-@Document(collection = "ai_logs")
+/**
+ * AI Log Entity - MongoDB temporarily disabled for deployment stability.
+ * Will be re-enabled when MongoDB is properly configured.
+ */
 public class AiLogEntity {
 
-    @Id
     private String id;
-    
     private Long userId;
     private String prompt;
     private String response;
-    
-    @CreatedDate
     private LocalDateTime createdAt;
 
     public AiLogEntity() {}

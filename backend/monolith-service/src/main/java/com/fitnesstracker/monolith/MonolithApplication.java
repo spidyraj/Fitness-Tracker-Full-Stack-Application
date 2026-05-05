@@ -15,7 +15,8 @@ import org.springframework.cache.annotation.EnableCaching;
     MongoReactiveDataAutoConfiguration.class,
     org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class,
     org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration.class,
-    org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration.class
+    org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration.class,
+    org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration.class
 })
 public class MonolithApplication {
 

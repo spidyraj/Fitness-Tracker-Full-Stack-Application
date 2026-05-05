@@ -87,14 +87,9 @@ public class GroqService {
                 .flatMap(response -> {
                     if (response.choices() != null && !response.choices().isEmpty()) {
                         String aiResponse = response.choices().get(0).message().content();
-                        // Log to console if MongoDB is not available
-                        if (aiLogRepository != null) {
-                            AiLogEntity log = new AiLogEntity(userId, prompt, aiResponse);
-                            return aiLogRepository.save(log).map(savedLog -> aiResponse);
-                        } else {
-                            System.out.println("[FitCoach] AI Response for user " + userId + ": " + aiResponse);
-                            return Mono.just(aiResponse);
-                        }
+                        // Log to console (MongoDB temporarily disabled)
+                        System.out.println("[FitCoach] AI Response for user " + userId + ": " + aiResponse);
+                        return Mono.just(aiResponse);
                     }
                     return Mono.just("I'm unable to generate advice right now. Please try again.");
                 })

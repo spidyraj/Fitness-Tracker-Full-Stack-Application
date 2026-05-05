@@ -53,21 +53,9 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Spring Data MongoDB Reactive (AI Logs) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-        </dependency>
+        <!-- MongoDB Reactive Temporarily Removed for Deployment Stability -->
 
-        <!-- Spring Data Redis & Caching -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
+        <!-- Redis & Cache Dependencies Temporarily Removed for Deployment Stability -->
 
         <!-- Validation -->
         <dependency>

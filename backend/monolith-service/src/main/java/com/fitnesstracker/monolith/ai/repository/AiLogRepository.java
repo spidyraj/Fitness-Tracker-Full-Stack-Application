@@ -1,11 +1,14 @@
 package com.fitnesstracker.monolith.ai.repository;
 
 import com.fitnesstracker.monolith.ai.entity.AiLogEntity;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
 
+/**
+ * AI Log Repository - MongoDB temporarily disabled for deployment stability.
+ * Will be re-enabled when MongoDB is properly configured.
+ */
 @Repository
-public interface AiLogRepository extends ReactiveMongoRepository<AiLogEntity, String> {
-    Flux<AiLogEntity> findByUserIdOrderByCreatedAtDesc(Long userId);
+public interface AiLogRepository {
+    // MongoDB operations temporarily disabled
+    // Methods will be re-added when MongoDB is properly configured
 }
