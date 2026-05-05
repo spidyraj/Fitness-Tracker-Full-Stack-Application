@@ -12,12 +12,7 @@
     <description>AI-powered fitness tracker — Spring Boot microservices portfolio project</description>
 
     <modules>
-        <module>user-service</module>
-        <module>workout-service</module>
-        <module>nutrition-service</module>
-        <module>analytics-service</module>
-        <module>ai-service</module>
-        <module>gateway</module>
+        <module>monolith-service</module>
     </modules>
 
     <parent>

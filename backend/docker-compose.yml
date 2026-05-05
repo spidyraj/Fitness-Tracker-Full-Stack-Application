@@ -1,6 +1,6 @@
 services:
 
-  # ─── PostgreSQL (local dev) ─────────────────────────────────────────────────
+  # ─── PostgreSQL (local dev) ────────────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
     container_name: fitness-postgres
@@ -18,7 +18,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # ─── Redis (local dev) ──────────────────────────────────────────────────────
+  # ─── Redis (local dev) ─────────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
     container_name: fitness-redis
@@ -33,7 +33,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # ─── MongoDB (local dev) ────────────────────────────────────────────────────
+  # ─── MongoDB (local dev) ───────────────────────────────────────────────────
   mongodb:
     image: mongo:7-jammy
     container_name: fitness-mongodb
@@ -51,125 +51,31 @@ services:
       timeout: 5s
       retries: 5
 
-  # ─── User Service ────────────────────────────────────────────────────────────
-  user-service:
+  # ─── Monolith Backend ──────────────────────────────────────────────────────
+  monolith-service:
     build:
       context: .
-      dockerfile: user-service/Dockerfile
-    container_name: fitness-user-service
+      dockerfile: monolith-service/Dockerfile
+    container_name: fitness-monolith
     ports:
-      - "8081:8081"
+      - "8080:8080"
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/fitness_db
       DB_USERNAME: fitness_user
       DB_PASSWORD: fitness_pass
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION_MS: 86400000
-    depends_on:
-      postgres:
-        condition: service_healthy
-    profiles:
-      - full
-
-  # ─── Workout Service ─────────────────────────────────────────────────────────
-  workout-service:
-    build:
-      context: .
-      dockerfile: workout-service/Dockerfile
-    container_name: fitness-workout-service
-    ports:
-      - "8082:8082"
-    environment:
-      DB_URL: jdbc:postgresql://postgres:5432/fitness_db
-      DB_USERNAME: fitness_user
-      DB_PASSWORD: fitness_pass
-      JWT_SECRET: ${JWT_SECRET}
-      USER_SERVICE_URL: http://user-service:8081
-    depends_on:
-      postgres:
-        condition: service_healthy
-    profiles:
-      - full
-
-  # ─── Nutrition Service ───────────────────────────────────────────────────────
-  nutrition-service:
-    build:
-      context: .
-      dockerfile: nutrition-service/Dockerfile
-    container_name: fitness-nutrition-service
-    ports:
-      - "8083:8083"
-    environment:
-      DB_URL: jdbc:postgresql://postgres:5432/fitness_db
-      DB_USERNAME: fitness_user
-      DB_PASSWORD: fitness_pass
-      JWT_SECRET: ${JWT_SECRET}
-    depends_on:
-      postgres:
-        condition: service_healthy
-    profiles:
-      - full
-
-  # ─── Analytics Service ───────────────────────────────────────────────────────
-  analytics-service:
-    build:
-      context: .
-      dockerfile: analytics-service/Dockerfile
-    container_name: fitness-analytics-service
-    ports:
-      - "8084:8084"
-    environment:
-      DB_URL: jdbc:postgresql://postgres:5432/fitness_db
-      DB_USERNAME: fitness_user
-      DB_PASSWORD: fitness_pass
-      JWT_SECRET: ${JWT_SECRET}
-    depends_on:
-      postgres:
-        condition: service_healthy
-    profiles:
-      - full
-
-  # ─── AI Service ──────────────────────────────────────────────────────────────
-  ai-service:
-    build:
-      context: .
-      dockerfile: ai-service/Dockerfile
-    container_name: fitness-ai-service
-    ports:
-      - "8085:8085"
-    environment:
-      GROQ_API_KEY: ${GROQ_API_KEY}
-      JWT_SECRET: ${JWT_SECRET}
       REDIS_HOST: redis
       REDIS_PORT: 6379
       MONGODB_URI: mongodb://fitness_user:fitness_pass@mongodb:27017/fitness_ai_logs?authSource=admin
+      GROQ_API_KEY: ${GROQ_API_KEY}
     depends_on:
+      postgres:
+        condition: service_healthy
       redis:
         condition: service_healthy
       mongodb:
         condition: service_healthy
-    profiles:
-      - full
-
-  # ─── API Gateway ─────────────────────────────────────────────────────────────
-  gateway:
-    build:
-      context: .
-      dockerfile: gateway/Dockerfile
-    container_name: fitness-gateway
-    ports:
-      - "8080:8080"
-    environment:
-      JWT_SECRET: ${JWT_SECRET}
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      USER_SERVICE_URL: http://user-service:8081
-      WORKOUT_SERVICE_URL: http://workout-service:8082
-      NUTRITION_SERVICE_URL: http://nutrition-service:8083
-      ANALYTICS_SERVICE_URL: http://analytics-service:8084
-      AI_SERVICE_URL: http://ai-service:8085
-    depends_on:
-      - redis
     profiles:
       - full
 
