@@ -60,10 +60,10 @@ const FitCoach = () => {
 
   return (
     <div className="animate-fade-in fitcoach-page">
-      <div className="page-header">
+      <div className="db-greeting-row">
         <div>
-          <h1>FitCoach AI</h1>
-          <p className="subtitle">Your elite personal trainer powered by Groq Llama 3.1</p>
+          <h1 className="db-greeting-text">FitCoach AI</h1>
+          <p className="db-greeting-sub">Your elite personal trainer powered by Groq Llama 3.1</p>
         </div>
       </div>
 

@@ -7,26 +7,14 @@ import Dashboard from './pages/Dashboard';
 import Workouts from './pages/Workouts';
 import Nutrition from './pages/Nutrition';
 import FitCoach from './pages/FitCoach';
-import Navbar from './components/Navbar';
-import ChatbotWidget from './components/ChatbotWidget';
+import AppLayout from './components/AppLayout';
 
 // Protected Route wrapper — redirects to /login if not authenticated
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  return <>{children}</>;
+  return <AppLayout>{children}</AppLayout>;
 };
-
-// Inner pages (Workouts, Nutrition, FitCoach) use the existing sidebar + chatbot
-const InnerLayout = ({ children }: { children: React.ReactNode }) => (
-  <div className="app-container">
-    <Navbar />
-    <main className="main-content">
-      {children}
-    </main>
-    <ChatbotWidget />
-  </div>
-);
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -39,7 +27,7 @@ function App() {
         <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" replace />} />
         <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/dashboard" replace />} />
 
-        {/* Dashboard — full-page with its own TopNav + Chatbot inside */}
+        {/* All protected app routes share the same AppLayout via the wrapper */}
         <Route
           path="/dashboard"
           element={
@@ -48,13 +36,11 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-        {/* Inner app pages — sidebar layout */}
         <Route
           path="/workouts"
           element={
             <ProtectedRoute>
-              <InnerLayout><Workouts /></InnerLayout>
+              <Workouts />
             </ProtectedRoute>
           }
         />
@@ -62,7 +48,7 @@ function App() {
           path="/nutrition"
           element={
             <ProtectedRoute>
-              <InnerLayout><Nutrition /></InnerLayout>
+              <Nutrition />
             </ProtectedRoute>
           }
         />
@@ -70,7 +56,7 @@ function App() {
           path="/coach"
           element={
             <ProtectedRoute>
-              <InnerLayout><FitCoach /></InnerLayout>
+              <FitCoach />
             </ProtectedRoute>
           }
         />

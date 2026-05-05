@@ -55,13 +55,13 @@ const Workouts = () => {
 
   return (
     <div className="animate-fade-in">
-      <div className="page-header">
+      <div className="db-greeting-row">
         <div>
-          <h1>Workouts</h1>
-          <p className="subtitle">Track your training sessions</p>
+          <h1 className="db-greeting-text">Workouts</h1>
+          <p className="db-greeting-sub">Track your training sessions and progress.</p>
         </div>
-        <button className="btn-primary btn-sm" onClick={() => setShowForm(!showForm)}>
-          <Plus size={18} /> {showForm ? 'Cancel' : 'Log Workout'}
+        <button className="db-quick-log" onClick={() => setShowForm(!showForm)}>
+          <Plus size={16} /> {showForm ? 'Cancel' : 'Log Workout'}
         </button>
       </div>
 

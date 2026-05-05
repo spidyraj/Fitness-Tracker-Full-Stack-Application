@@ -63,13 +63,13 @@ const Nutrition = () => {
 
   return (
     <div className="animate-fade-in">
-      <div className="page-header">
+      <div className="db-greeting-row">
         <div>
-          <h1>Nutrition</h1>
-          <p className="subtitle">Track your meals and macros</p>
+          <h1 className="db-greeting-text">Nutrition</h1>
+          <p className="db-greeting-sub">Track your meals and macros for optimal performance.</p>
         </div>
-        <button className="btn-primary btn-sm" onClick={() => setShowForm(!showForm)}>
-          <Plus size={18} /> {showForm ? 'Cancel' : 'Log Food'}
+        <button className="db-quick-log" onClick={() => setShowForm(!showForm)}>
+          <Plus size={16} /> {showForm ? 'Cancel' : 'Log Food'}
         </button>
       </div>
 
