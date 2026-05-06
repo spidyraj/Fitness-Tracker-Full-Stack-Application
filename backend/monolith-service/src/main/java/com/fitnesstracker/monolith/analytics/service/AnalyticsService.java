@@ -7,6 +7,9 @@ import com.fitnesstracker.monolith.workout.service.WorkoutService;
 import com.fitnesstracker.monolith.nutrition.service.NutritionService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,19 +26,31 @@ public class AnalyticsService {
 
     public DailySummary getDailySummary(Long userId, String token) {
         
+        // Define today's date range (start of day to end of day)
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().atTime(LocalTime.MAX);
+        
         // Fetch workouts directly from service
         List<com.fitnesstracker.monolith.workout.dto.WorkoutResponse> workoutsRaw = workoutService.getUserWorkouts(userId);
         
-        // Map to internal Analytics DTO (WorkoutResponse)
+        // Filter for today's workouts and map to internal Analytics DTO (WorkoutResponse)
         List<WorkoutResponse> workouts = workoutsRaw.stream()
+                .filter(w -> {
+                    LocalDateTime workoutDate = w.workoutDate();
+                    return !workoutDate.isBefore(startOfDay) && !workoutDate.isAfter(endOfDay);
+                })
                 .map(w -> new WorkoutResponse(w.id(), w.userId(), w.title(), w.durationMinutes(), w.type().name(), w.workoutDate()))
                 .collect(Collectors.toList());
 
         // Fetch nutrition logs directly from service
         List<com.fitnesstracker.monolith.nutrition.dto.NutritionResponse> nutritionRaw = nutritionService.getUserNutritionLogs(userId);
         
-        // Map to internal Analytics DTO (NutritionResponse)
+        // Filter for today's nutrition logs and map to internal Analytics DTO (NutritionResponse)
         List<NutritionResponse> nutritionLogs = nutritionRaw.stream()
+                .filter(n -> {
+                    LocalDateTime logDate = n.logDate();
+                    return !logDate.isBefore(startOfDay) && !logDate.isAfter(endOfDay);
+                })
                 .map(n -> new NutritionResponse(n.id(), n.userId(), n.foodName(), n.mealType().name(), n.calories(), n.protein(), n.carbs(), n.fats(), n.logDate()))
                 .collect(Collectors.toList());
 
@@ -50,7 +65,7 @@ public class AnalyticsService {
                     return switch (workout.type().toUpperCase()) {
                         case "CARDIO" -> minutes * 10;  // ~10 cal/min for cardio
                         case "STRENGTH" -> minutes * 6;  // ~6 cal/min for strength
-                        case "HIITS" -> minutes * 12;    // ~12 cal/min for HIIT
+                        case "HIIT" -> minutes * 12;     // Fixed: was HIITS - ~12 cal/min for HIIT
                         case "FLEXIBILITY" -> minutes * 3; // ~3 cal/min for flexibility
                         default -> minutes * 5;          // ~5 cal/min for other
                     };

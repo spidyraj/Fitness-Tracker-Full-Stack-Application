@@ -53,6 +53,12 @@ public class UserEntity {
     @Column
     private Double heightCm;
 
+    @Column
+    private String fitnessGoal;
+
+    @Column
+    private String activityLevel;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -99,6 +105,8 @@ public class UserEntity {
     public Integer getAge()         { return age; }
     public Double getWeightKg()     { return weightKg; }
     public Double getHeightCm()     { return heightCm; }
+    public String getFitnessGoal()  { return fitnessGoal; }
+    public String getActivityLevel() { return activityLevel; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
 
@@ -111,4 +119,6 @@ public class UserEntity {
     public void setAge(Integer v)           { this.age = v; }
     public void setWeightKg(Double v)       { this.weightKg = v; }
     public void setHeightCm(Double v)       { this.heightCm = v; }
+    public void setFitnessGoal(String v)    { this.fitnessGoal = v; }
+    public void setActivityLevel(String v)  { this.activityLevel = v; }
 }

@@ -47,8 +47,18 @@ public class WorkoutEntity {
     @Column
     private LocalDateTime updatedAt;
 
+    /**
+     * WorkoutType enum — IMPORTANT: these values must match the frontend dropdown options.
+     * Frontend sends: CARDIO, STRENGTH, FLEXIBILITY, HIIT, SPORTS, YOGA, OTHER
+     */
     public enum WorkoutType {
-        CARDIO, STRENGTH, FLEXIBILITY, HIITS, OTHER
+        CARDIO,
+        STRENGTH,
+        FLEXIBILITY,
+        HIIT,       // Fixed: was HIITS (typo) — update any existing data if migrating
+        SPORTS,     // Added: was missing from original enum
+        YOGA,       // Added: common workout type
+        OTHER
     }
 
     // ─── Constructors ────────────────────────────────────────────────────────

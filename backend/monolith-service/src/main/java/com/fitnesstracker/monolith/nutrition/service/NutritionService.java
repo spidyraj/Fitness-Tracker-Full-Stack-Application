@@ -22,14 +22,23 @@ public class NutritionService {
 
     @Transactional
     public NutritionResponse logNutrition(Long userId, NutritionRequest request) {
+        // Determine calories: use provided value, or calculate from macros if 0/null
+        int calories = request.calories() != null ? request.calories() : 0;
+        if (calories == 0 && hasMacros(request)) {
+            calories = request.calculateCaloriesFromMacros();
+        }
+
         NutritionEntity entity = NutritionEntity.builder()
                 .userId(userId)
                 .mealName(request.foodName())
                 .mealType(request.mealType() != null ? request.mealType() : NutritionEntity.MealType.SNACK)
-                .calories(request.calories())
+                .calories(calories)
                 .proteinGrams(request.protein())
                 .carbsGrams(request.carbs())
-                .fatGrams(request.fat())
+                .fatGrams(request.fats())          // Fixed: was request.fat()
+                .weightGrams(request.weightGrams())
+                .servingDescription(request.servingDescription())
+                .cuisine(request.cuisine())
                 .logDate(request.logDate() != null ? request.logDate() : LocalDateTime.now())
                 .build();
 
@@ -44,28 +53,38 @@ public class NutritionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public NutritionResponse updateNutritionLog(Long id, Long userId, NutritionRequest request) {
+        NutritionEntity entity = getOwnedEntity(id, userId);
+
+        // Update fields
+        entity.setMealName(request.foodName());
+        if (request.mealType() != null) entity.setMealType(request.mealType());
+        if (request.calories() != null) entity.setCalories(request.calories());
+        entity.setProteinGrams(request.protein());
+        entity.setCarbsGrams(request.carbs());
+        entity.setFatGrams(request.fats());         // Fixed: was missing update
+        entity.setWeightGrams(request.weightGrams());
+        entity.setServingDescription(request.servingDescription());
+        entity.setCuisine(request.cuisine());
+        if (request.logDate() != null) entity.setLogDate(request.logDate());
+
+        // Recalculate calories if 0 and macros present
+        if ((entity.getCalories() == null || entity.getCalories() == 0) && hasMacros(request)) {
+            entity.setCalories(request.calculateCaloriesFromMacros());
+        }
+
+        return mapToResponse(nutritionRepository.save(entity));
+    }
+
     @Transactional(readOnly = true)
     public NutritionResponse getNutritionLogById(Long id, Long userId) {
-        NutritionEntity entity = nutritionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nutrition log not found"));
-                
-        if (!entity.getUserId().equals(userId)) {
-            throw new RuntimeException("Access denied");
-        }
-        
-        return mapToResponse(entity);
+        return mapToResponse(getOwnedEntity(id, userId));
     }
 
     @Transactional
     public void deleteNutritionLog(Long id, Long userId) {
-        NutritionEntity entity = nutritionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nutrition log not found"));
-                
-        if (!entity.getUserId().equals(userId)) {
-            throw new RuntimeException("Access denied");
-        }
-        
-        nutritionRepository.delete(entity);
+        nutritionRepository.delete(getOwnedEntity(id, userId));
     }
 
     private NutritionResponse mapToResponse(NutritionEntity entity) {
@@ -77,9 +96,29 @@ public class NutritionService {
                 entity.getCalories(),
                 entity.getProteinGrams(),
                 entity.getCarbsGrams(),
-                entity.getFatGrams(),
+                entity.getFatGrams(),      // Fixed: maps to 'fats' field in response
+                entity.getWeightGrams(),
+                entity.getServingDescription(),
+                entity.getCuisine(),
                 entity.getLogDate(),
                 entity.getCreatedAt()
         );
+    }
+
+    // ─── Helpers ─────────────────────────────────────────────────────────────
+
+    private NutritionEntity getOwnedEntity(Long id, Long userId) {
+        NutritionEntity entity = nutritionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nutrition log not found"));
+        if (!entity.getUserId().equals(userId)) {
+            throw new RuntimeException("Access denied");
+        }
+        return entity;
+    }
+
+    private boolean hasMacros(NutritionRequest request) {
+        return (request.protein() != null && request.protein() > 0) ||
+               (request.carbs() != null && request.carbs() > 0) ||
+               (request.fats() != null && request.fats() > 0);
     }
 }

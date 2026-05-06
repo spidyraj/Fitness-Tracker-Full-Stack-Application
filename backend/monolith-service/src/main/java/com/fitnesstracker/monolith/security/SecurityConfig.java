@@ -19,10 +19,14 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final String allowedOrigins;
+    private final boolean h2ConsoleEnabled;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter, @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins}") String allowedOrigins) {
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, 
+                         @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins}") String allowedOrigins,
+                         @org.springframework.beans.factory.annotation.Value("${spring.h2.console.enabled:false}") boolean h2ConsoleEnabled) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.allowedOrigins = allowedOrigins;
+        this.h2ConsoleEnabled = h2ConsoleEnabled;
     }
 
     @Bean
@@ -39,12 +43,17 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/actuator/info").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .anyRequest().authenticated()
-                )
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/api/auth/**").permitAll()
+                       .requestMatchers("/actuator/health").permitAll();
+                    
+                    // Only allow H2 console in development
+                    if (h2ConsoleEnabled) {
+                        auth.requestMatchers("/h2-console/**").permitAll();
+                    }
+                    
+                    auth.anyRequest().authenticated();
+                })
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

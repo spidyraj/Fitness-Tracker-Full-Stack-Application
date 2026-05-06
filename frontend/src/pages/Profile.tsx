@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import api from '../services/api';
 import { User, Weight, Ruler, Target, Calendar, Edit2, Save, X } from 'lucide-react';
 import EnhancedButton from '../components/EnhancedButton';
 import './Profile.css';
@@ -36,35 +37,45 @@ const Profile: React.FC = () => {
 
   const loadUserProfile = async () => {
     try {
-      // Mock data - replace with actual API call
+      const response = await api.get('/profile');
+      const profileData = response.data;
+      
       setProfile({
-        age: 25,
-        weightKg: 70,
-        heightCm: 175,
-        fitnessGoal: 'muscle_gain',
-        activityLevel: 'moderate'
+        age: profileData.age,
+        weightKg: profileData.weightKg,
+        heightCm: profileData.heightCm,
+        fitnessGoal: profileData.fitnessGoal || '',
+        activityLevel: profileData.activityLevel || ''
       });
       setEditProfile({
-        age: 25,
-        weightKg: 70,
-        heightCm: 175,
-        fitnessGoal: 'muscle_gain',
-        activityLevel: 'moderate'
+        age: profileData.age,
+        weightKg: profileData.weightKg,
+        heightCm: profileData.heightCm,
+        fitnessGoal: profileData.fitnessGoal || '',
+        activityLevel: profileData.activityLevel || ''
       });
-    } catch (error) {
-      showError('Failed to load profile data');
+    } catch (error: any) {
+      showError(error?.response?.data?.detail || 'Failed to load profile data');
     }
   };
 
   const handleSave = async () => {
     setLoading(true);
     try {
-      // Save profile data to backend
+      const payload = {
+        age: editProfile.age,
+        weightKg: editProfile.weightKg,
+        heightCm: editProfile.heightCm,
+        fitnessGoal: editProfile.fitnessGoal || null,
+        activityLevel: editProfile.activityLevel || null
+      };
+      
+      await api.put('/profile', payload);
       setProfile({ ...editProfile });
       setIsEditing(false);
       showSuccess('Profile updated successfully! 💪');
-    } catch (error) {
-      showError('Failed to update profile');
+    } catch (error: any) {
+      showError(error?.response?.data?.detail || 'Failed to update profile');
     } finally {
       setLoading(false);
     }

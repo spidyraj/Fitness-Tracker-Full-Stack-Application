@@ -13,6 +13,9 @@ public record NutritionResponse(
         Double protein,
         Double carbs,
         Double fats,
+        Double weightGrams,
+        String servingDescription,
+        String cuisine,
         LocalDateTime logDate,
         LocalDateTime createdAt
 ) {}

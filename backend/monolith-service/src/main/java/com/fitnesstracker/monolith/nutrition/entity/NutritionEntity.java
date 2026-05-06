@@ -41,6 +41,15 @@ public class NutritionEntity {
     @Column
     private Double fatGrams;
 
+    @Column
+    private Double weightGrams;
+
+    @Column
+    private String servingDescription;
+
+    @Column
+    private String cuisine;
+
     @NotNull
     @Column(nullable = false)
     private LocalDateTime logDate;
@@ -67,6 +76,9 @@ public class NutritionEntity {
         this.proteinGrams = builder.proteinGrams;
         this.carbsGrams = builder.carbsGrams;
         this.fatGrams = builder.fatGrams;
+        this.weightGrams = builder.weightGrams;
+        this.servingDescription = builder.servingDescription;
+        this.cuisine = builder.cuisine;
         this.logDate = builder.logDate != null ? builder.logDate : LocalDateTime.now();
     }
 
@@ -78,6 +90,9 @@ public class NutritionEntity {
         private MealType mealType;
         private Integer calories;
         private Double proteinGrams, carbsGrams, fatGrams;
+        private Double weightGrams;
+        private String servingDescription;
+        private String cuisine;
         private LocalDateTime logDate;
 
         public Builder userId(Long v) { this.userId = v; return this; }
@@ -87,6 +102,9 @@ public class NutritionEntity {
         public Builder proteinGrams(Double v) { this.proteinGrams = v; return this; }
         public Builder carbsGrams(Double v) { this.carbsGrams = v; return this; }
         public Builder fatGrams(Double v) { this.fatGrams = v; return this; }
+        public Builder weightGrams(Double v) { this.weightGrams = v; return this; }
+        public Builder servingDescription(String v) { this.servingDescription = v; return this; }
+        public Builder cuisine(String v) { this.cuisine = v; return this; }
         public Builder logDate(LocalDateTime v) { this.logDate = v; return this; }
         public NutritionEntity build() { return new NutritionEntity(this); }
     }
@@ -99,6 +117,9 @@ public class NutritionEntity {
     public Double getProteinGrams() { return proteinGrams; }
     public Double getCarbsGrams() { return carbsGrams; }
     public Double getFatGrams() { return fatGrams; }
+    public Double getWeightGrams() { return weightGrams; }
+    public String getServingDescription() { return servingDescription; }
+    public String getCuisine() { return cuisine; }
     public LocalDateTime getLogDate() { return logDate; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
@@ -111,5 +132,8 @@ public class NutritionEntity {
     public void setProteinGrams(Double proteinGrams) { this.proteinGrams = proteinGrams; }
     public void setCarbsGrams(Double carbsGrams) { this.carbsGrams = carbsGrams; }
     public void setFatGrams(Double fatGrams) { this.fatGrams = fatGrams; }
+    public void setWeightGrams(Double weightGrams) { this.weightGrams = weightGrams; }
+    public void setServingDescription(String servingDescription) { this.servingDescription = servingDescription; }
+    public void setCuisine(String cuisine) { this.cuisine = cuisine; }
     public void setLogDate(LocalDateTime logDate) { this.logDate = logDate; }
 }
