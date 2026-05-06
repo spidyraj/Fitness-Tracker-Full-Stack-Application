@@ -1,12 +1,10 @@
 import React from 'react';
-import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import EnhancedButton from './EnhancedButton';
 import './GoogleOAuth.css';
 
 const GoogleOAuth: React.FC = () => {
-  const { login } = useAuth();
-  const { showSuccess, showError } = useToast();
+  const { showError } = useToast();
 
   const handleGoogleSignIn = async () => {
     showError('Google sign-in is currently disabled. Please use email and password to register/login.');
