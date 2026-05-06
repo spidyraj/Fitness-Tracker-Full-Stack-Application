@@ -22,7 +22,7 @@ public class SecurityConfig {
     private final boolean h2ConsoleEnabled;
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter, 
-                         @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins}") String allowedOrigins,
+                         @org.springframework.beans.factory.annotation.Value("${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,https://backend-production-9e6b.up.railway.app}") String allowedOrigins,
                          @org.springframework.beans.factory.annotation.Value("${spring.h2.console.enabled:false}") boolean h2ConsoleEnabled) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.allowedOrigins = allowedOrigins;
