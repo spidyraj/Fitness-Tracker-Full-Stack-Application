@@ -9,56 +9,7 @@ const GoogleOAuth: React.FC = () => {
   const { showSuccess, showError } = useToast();
 
   const handleGoogleSignIn = async () => {
-    try {
-      // Google OAuth configuration
-      const CLIENT_ID = 'your-google-client-id';
-      const REDIRECT_URI = `${window.location.origin}/auth/google/callback`;
-      
-      // Build Google OAuth URL
-      const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-      authUrl.searchParams.set('client_id', CLIENT_ID);
-      authUrl.searchParams.set('redirect_uri', REDIRECT_URI);
-      authUrl.searchParams.set('response_type', 'code');
-      authUrl.searchParams.set('scope', 'openid email profile');
-      authUrl.searchParams.set('access_type', 'offline');
-      
-      // Open Google OAuth in popup
-      const popup = window.open(
-        authUrl.toString(),
-        'googleSignIn',
-        'width=500,height=600,scrollbars=yes,resizable=yes'
-      );
-
-      // Listen for OAuth callback
-      const messageHandler = (event: MessageEvent) => {
-        if (event.origin !== window.location.origin) return;
-        
-        if (event.data.type === 'GOOGLE_OAUTH_SUCCESS') {
-          const { token, user } = event.data.payload;
-          login(token, user);
-          showSuccess('Successfully signed in with Google! 🎉');
-          popup?.close();
-          window.removeEventListener('message', messageHandler);
-        } else if (event.data.type === 'GOOGLE_OAUTH_ERROR') {
-          showError(event.data.message || 'Google sign-in failed');
-          popup?.close();
-          window.removeEventListener('message', messageHandler);
-        }
-      };
-
-      window.addEventListener('message', messageHandler);
-      
-      // Fallback: Check popup closed manually
-      const checkClosed = setInterval(() => {
-        if (popup?.closed) {
-          clearInterval(checkClosed);
-          window.removeEventListener('message', messageHandler);
-        }
-      }, 1000);
-
-    } catch (error) {
-      showError('Failed to initiate Google sign-in');
-    }
+    showError('Google sign-in is currently disabled. Please use email and password to register/login.');
   };
 
   return (
