@@ -7,4 +7,6 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY --from=build /app/monolith-service/target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Auto-activate PostgreSQL profile if DB_URL contains postgresql
+ENTRYPOINT ["sh", "-c", "if echo $DB_URL | grep -q postgresql; then java -jar -Dspring.profiles.active=postgresql app.jar; else java -jar app.jar; fi"]
