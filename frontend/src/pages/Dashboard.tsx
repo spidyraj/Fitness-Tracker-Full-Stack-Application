@@ -103,27 +103,45 @@ const TiltCard = ({ children, className }: { children: React.ReactNode, classNam
   );
 };
 
-// Mini Weekly Chart Component
-const WeeklyChart = () => {
+// Mini Weekly Chart Component connected to real workout data
+const WeeklyChart = ({ workouts }: { workouts: Workout[] }) => {
   const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  // Mock data representing activity intensity (0-100)
   const [data, setData] = useState([0, 0, 0, 0, 0, 0, 0]);
   
   useEffect(() => {
+    const weeklyTotals = [0, 0, 0, 0, 0, 0, 0];
+    const now = new Date();
+    // Get start of current week (Monday)
+    const dayOfWeek = now.getDay() || 7; 
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - dayOfWeek + 1);
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    workouts.forEach(w => {
+      const wDate = new Date(w.workoutDate);
+      if (wDate >= startOfWeek) {
+        let idx = wDate.getDay() - 1;
+        if (idx === -1) idx = 6; // Sunday is 6
+        weeklyTotals[idx] += w.durationMinutes;
+      }
+    });
+
     // Animate bars in on load
     setTimeout(() => {
-      setData([45, 80, 20, 95, 60, 30, 85]);
+      setData(weeklyTotals);
     }, 300);
-  }, []);
+  }, [workouts]);
 
   return (
     <div className="weekly-chart-container">
       <div className="weekly-bars">
         {data.map((val, i) => {
-          const isHigh = val > 60;
+          // Max height caps at 120 minutes = 100%, min height is 5% so bar is visible
+          const heightPercent = Math.max(Math.min((val / 120) * 100, 100), 5);
+          const isHigh = val >= 45;
           return (
             <div key={i} className="bar-wrapper" title={`${val} min active`}>
-              <div className={`chart-bar ${isHigh ? 'high-intensity' : 'low-intensity'}`} style={{ height: `${val}%` }}>
+              <div className={`chart-bar ${isHigh ? 'high-intensity' : 'low-intensity'}`} style={{ height: `${heightPercent}%` }}>
                 <div className="bar-tooltip">{val}m</div>
               </div>
               <span className="bar-label">{days[i]}</span>
@@ -141,6 +159,7 @@ const Dashboard: React.FC = () => {
   const { showError } = useToast();
 
   const [summary, setSummary] = useState<SummaryData | null>(null);
+  const [allWorkouts, setAllWorkouts] = useState<Workout[]>([]);
   const [recentWorkouts, setRecentWorkouts] = useState<Workout[]>([]);
   const [recentMeals, setRecentMeals] = useState<NutritionLog[]>([]);
   const [loadingSummary, setLoadingSummary] = useState(true);
@@ -168,7 +187,9 @@ const Dashboard: React.FC = () => {
           api.get('/nutrition'),
         ]);
         setSummary(sumRes.data);
-        setRecentWorkouts((workRes.data as Workout[]).slice(0, 5));
+        const workoutsData = workRes.data as Workout[];
+        setAllWorkouts(workoutsData);
+        setRecentWorkouts(workoutsData.slice(0, 5));
         setRecentMeals((nutRes.data as NutritionLog[]).slice(0, 5));
       } catch (err: any) {
         showError('Failed to load dashboard data');
@@ -272,7 +293,7 @@ const Dashboard: React.FC = () => {
           <h3 className="text-sm font-semibold text-white/70 mb-4 flex items-center gap-2">
             <Clock size={14}/> Weekly Activity Pulse
           </h3>
-          <WeeklyChart />
+          <WeeklyChart workouts={allWorkouts} />
         </div>
       </div>
 
