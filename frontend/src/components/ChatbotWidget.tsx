@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, ReactNode } from 'react';
-import { Bot, Send, Minimize2, Activity, Flame } from 'lucide-react';
+import { Bot, Send, Minimize2 } from 'lucide-react';
 import api from '../services/api';
 import './ChatbotWidget.css';
 
