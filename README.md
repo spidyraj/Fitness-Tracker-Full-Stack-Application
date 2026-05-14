@@ -1,260 +1,370 @@
-# AI Fitness Tracker 🏋️‍♂️
+# 🏋️‍♂️ AI Fitness Tracker
 
-> A production-grade microservices backend for an AI-powered fitness tracking application.
-> Built as a full-stack portfolio project demonstrating Spring Boot, Spring Cloud Gateway, Groq AI integration, Docker, Kubernetes, and a complete CI/CD pipeline.
+> A production-ready, full-stack fitness tracking application powered by AI coaching.  
+> Built with a **React + TypeScript** frontend and a **Spring Boot monolith** backend — deployed live on Vercel & Railway.
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black?logo=vercel&style=flat-square)](https://fitness-tracker-full-stack-applicat.vercel.app)
 [![CI/CD Pipeline](https://github.com/spidyraj/Fitness-Tracker-Full-Stack-Application/actions/workflows/ci.yml/badge.svg)](https://github.com/spidyraj/Fitness-Tracker-Full-Stack-Application/actions)
+[![Backend](https://img.shields.io/badge/Backend-Railway-blueviolet?logo=railway&style=flat-square)](https://railway.app)
 
 ---
 
-## Architecture
+## 🌐 Live Demo
+
+**Frontend:** [https://fitness-tracker-full-stack-applicat.vercel.app](https://fitness-tracker-full-stack-applicat.vercel.app)
+
+| Credential | Value |
+|------------|-------|
+| Demo Email | Register a free account |
+| Backend API | Deployed on Railway (Spring Boot monolith) |
+
+---
+
+## ✨ Features
+
+- 🔐 **JWT Authentication** — Secure register / login with stateless JWT tokens
+- 🏋️ **Workout Logging** — Log exercises by type (Cardio, Strength, Flexibility) with duration tracking
+- 🥗 **Nutrition Tracking** — Calorie & macro logging (protein, carbs, fat) with meal-type categorisation
+- 🤖 **AI Coach (FitCoach)** — Context-aware coaching via Groq API (Llama 3), with full markdown rendering
+- 📊 **Analytics Dashboard** — Real-time progress charts, animated stat rings, and daily summaries
+- 👤 **User Profile** — BMI calculator, fitness goals, and personal stats management
+- 💬 **Floating Chatbot Widget** — Persistent AI assistant accessible from any page
+- 🌙 **Dark Mode UI** — Premium glassmorphism design with 3D card tilt effects and micro-animations
+
+---
+
+## 🏗️ Architecture
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│                        Client Layer                       │
-│                React / Android / iOS                      │
-└──────────────────────┬───────────────────────────────────┘
-                       │ HTTPS
-┌──────────────────────▼───────────────────────────────────┐
-│              Spring Cloud Gateway  :8080                  │
-│     JWT Auth Filter  •  Rate Limiting (Redis)             │
-│     CORS  •  Global Error Handling  •  Routing            │
-└──┬──────────┬──────────┬──────────┬────────────┬─────────┘
-   │          │          │          │            │
-┌──▼──┐  ┌───▼──┐  ┌────▼──┐  ┌───▼───┐  ┌────▼───┐
-│User │  │Work- │  │Nutri- │  │Analy- │  │  AI    │
-│:8081│  │out   │  │tion   │  │tics   │  │Service │
-│     │  │:8082 │  │:8083  │  │:8084  │  │:8085   │
-└──┬──┘  └───┬──┘  └────┬──┘  └───┬───┘  └────┬───┘
-   │          │          │          │            │
-┌──▼──────────▼──────────▼─────────┘       ┌────▼───┐
-│         PostgreSQL (Neon.tech)            │MongoDB │
-│         Redis (Upstash)                  │Atlas   │
-└──────────────────────────────────────────└────────┘
+┌─────────────────────────────────────────────┐
+│              Client (Browser)                │
+│    React 18 + TypeScript + Vite             │
+│    Deployed on: Vercel                       │
+└────────────────────┬────────────────────────┘
+                     │ HTTPS / Axios
+┌────────────────────▼────────────────────────┐
+│         Spring Boot Monolith  :8080          │
+│  Spring Security (JWT)  •  Spring Data JPA  │
+│  WebFlux (Groq AI)  •  Caffeine Cache       │
+│  Deployed on: Railway                        │
+└──────┬──────────┬──────────────┬────────────┘
+       │          │              │
+  ┌────▼───┐ ┌────▼────┐   ┌────▼────┐
+  │Postgres│ │ Neon.tech│   │  Groq   │
+  │(Neon)  │ │  (cloud) │   │  API    │
+  └────────┘ └──────────┘   └─────────┘
 ```
 
-## Tech Stack
-
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| Gateway | Spring Cloud Gateway | Auth, routing, rate limiting |
-| Services | Spring Boot 3.x + Java 21 | Core business logic |
-| AI Layer | Groq API (Llama 3) | Coaching, recommendations |
-| Primary DB | PostgreSQL (Neon.tech) | Users, workouts, nutrition |
-| Cache | Redis (Upstash) | Rate limiting, AI response cache |
-| Document DB | MongoDB Atlas | AI interaction logs |
-| CI/CD | GitHub Actions | Build, test, push Docker images |
-| Containers | Docker + Kubernetes | Packaging and orchestration |
+The backend is a **consolidated monolith** (previously a microservices design) containing all domain modules — `user`, `workout`, `nutrition`, `analytics`, and `ai` — under a single deployable Spring Boot application. This simplifies Railway deployment while retaining clean domain separation via packages.
 
 ---
 
-## Services
+## 🛠️ Tech Stack
 
-| Service | Port | Responsibility |
-|---------|------|----------------|
-| `gateway` | 8080 | API Gateway — single entry point |
-| `user-service` | 8081 | Registration, login, JWT auth |
-| `workout-service` | 8082 | Exercise logging and CRUD |
-| `nutrition-service` | 8083 | Meal tracking and macro calculation |
-| `analytics-service` | 8084 | Aggregated daily summaries |
-| `ai-service` | 8085 | Groq AI coaching and recommendations |
+### Frontend
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **React** | 18.3 | UI framework |
+| **TypeScript** | 5.6 | Type safety |
+| **Vite** | 5.4 | Build tool & dev server |
+| **React Router DOM** | 6.x | Client-side routing (SPA) |
+| **Axios** | 1.x | HTTP client for API calls |
+| **Lucide React** | latest | Icon library |
+| **Vanilla CSS** | — | Custom dark-mode design system |
+| **Vercel** | — | Hosting + SPA rewrite rules |
+
+### Backend
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **Java** | 21 | Language |
+| **Spring Boot** | 3.x | Application framework |
+| **Spring Security** | 6.x | JWT auth & route protection |
+| **Spring Data JPA** | — | ORM + repository layer |
+| **Spring WebFlux** | — | Reactive HTTP client (Groq API) |
+| **JJWT** | — | JWT creation & validation |
+| **PostgreSQL** | — | Primary relational database |
+| **Neon.tech** | — | Serverless PostgreSQL hosting |
+| **Caffeine Cache** | — | In-memory AI response caching |
+| **Lombok** | 1.18 | Boilerplate reduction |
+| **MapStruct** | — | DTO ↔ Entity mapping |
+| **Groq API (Llama 3)** | — | AI coaching engine |
+| **Docker** | — | Containerisation |
+| **Railway** | — | Cloud backend deployment |
+
+### DevOps & Tooling
+
+| Tool | Purpose |
+|------|---------|
+| **GitHub Actions** | CI/CD pipeline (build → test → push) |
+| **Docker** | Container image for Railway |
+| **Kubernetes + k8s/** | Manifests available for self-hosted orchestration |
+| **Maven** (multi-module) | Backend build system |
 
 ---
 
-## Quick Start (Local Development)
+## 📁 Project Structure
+
+```
+fitness-tracker/
+├── frontend/                        # React + TypeScript SPA
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── Dashboard.tsx        # Animated stats, progress charts
+│   │   │   ├── Workouts.tsx         # Workout CRUD
+│   │   │   ├── Nutrition.tsx        # Meal & macro tracking
+│   │   │   ├── FitCoach.tsx         # Full AI coaching page
+│   │   │   ├── Profile.tsx          # User profile & BMI
+│   │   │   └── EnhancedLogin.tsx    # Auth pages
+│   │   ├── components/
+│   │   │   ├── ChatbotWidget.tsx    # Floating AI chat widget
+│   │   │   ├── ProgressChart.tsx    # Animated SVG charts
+│   │   │   ├── TopNav.tsx           # Persistent navigation bar
+│   │   │   ├── AppLayout.tsx        # Centralised layout wrapper
+│   │   │   ├── WorkoutAnimations.tsx# 3D card & animation components
+│   │   │   ├── Toast.tsx            # Notification system
+│   │   │   ├── ErrorBoundary.tsx    # React error boundary
+│   │   │   └── LoadingSkeleton.tsx  # Skeleton loading states
+│   │   ├── services/                # Axios API service layer
+│   │   ├── context/                 # React Context (auth state)
+│   │   ├── types/                   # TypeScript interfaces
+│   │   └── styles/                  # Global CSS tokens
+│   ├── vercel.json                  # SPA rewrite rules for Vercel
+│   └── vite.config.ts
+│
+├── backend/
+│   ├── monolith-service/            # Spring Boot monolith
+│   │   ├── src/main/java/com/fitnesstracker/monolith/
+│   │   │   ├── user/                # Registration, login, JWT
+│   │   │   ├── workout/             # Exercise logging & CRUD
+│   │   │   ├── nutrition/           # Meal & macro tracking
+│   │   │   ├── analytics/           # Daily summaries & aggregation
+│   │   │   ├── ai/                  # Groq API integration
+│   │   │   ├── security/            # JWT filter, Spring Security config
+│   │   │   ├── config/              # CORS, cache, WebClient config
+│   │   │   └── exception/           # Global exception handler
+│   │   └── Dockerfile
+│   ├── k8s/                         # Kubernetes manifests (self-hosted option)
+│   ├── docker-compose.yml           # Local dev stack
+│   ├── railway.toml                 # Railway deployment config
+│   └── pom.xml                      # Maven parent POM
+│
+└── .github/workflows/ci.yml         # GitHub Actions CI/CD
+```
+
+---
+
+## 🚀 Quick Start (Local Development)
 
 ### Prerequisites
-- Java 21+
-- Maven 3.9+
-- Docker Desktop
+- **Node.js** 18+ & npm
+- **Java 21+** & Maven 3.9+
+- **Docker Desktop** (optional, for local PostgreSQL)
 
-### 1. Clone and configure environment
+### 1. Clone the repo
 
 ```bash
 git clone https://github.com/spidyraj/Fitness-Tracker-Full-Stack-Application.git
 cd Fitness-Tracker-Full-Stack-Application
+```
+
+### 2. Start the Backend
+
+```bash
+cd backend
+
+# Option A — Use cloud databases (Neon + Groq API keys in .env)
 cp .env.example .env
-# Edit .env with your Neon, Upstash, MongoDB Atlas, and Groq API keys
-```
+# Fill in: DATABASE_URL, GROQ_API_KEY
 
-### 2. Start infrastructure (PostgreSQL + Redis + MongoDB)
+mvn spring-boot:run -pl monolith-service
 
-```bash
-docker compose up postgres redis mongodb -d
-```
-
-### 3. Start services (in separate terminals)
-
-```bash
-# Terminal 1 — User Service (required first for auth)
-mvn spring-boot:run -pl user-service
-
-# Terminal 2 — Workout Service
-mvn spring-boot:run -pl workout-service
-
-# Terminal 3 — Nutrition Service
-mvn spring-boot:run -pl nutrition-service
-
-# Terminal 4 — Analytics Service
-mvn spring-boot:run -pl analytics-service
-
-# Terminal 5 — AI Service
-mvn spring-boot:run -pl ai-service
-
-# Terminal 6 — API Gateway (start last)
-mvn spring-boot:run -pl gateway
-```
-
-### 4. Or start everything with Docker Compose
-
-```bash
+# Option B — Docker Compose (spins up local PostgreSQL)
 docker compose up --build
 ```
 
+Backend runs at `http://localhost:8080`.
+
+### 3. Start the Frontend
+
+```bash
+cd frontend
+cp .env.example .env.local
+# Set: VITE_API_URL=http://localhost:8080
+
+npm install
+npm run dev
+```
+
+Frontend runs at `http://localhost:5173`.
+
 ---
 
-## API Reference
+## 🔌 API Reference
 
-### Authentication
+All endpoints are prefixed with `/api`. The JWT token from `/api/auth/login` must be passed as `Authorization: Bearer <token>` on protected routes.
+
+### Auth
 
 ```bash
 # Register
-POST http://localhost:8080/api/auth/register
-{"email":"user@example.com","password":"secret","firstName":"John","lastName":"Doe"}
+POST /api/auth/register
+{ "email": "user@example.com", "password": "secret", "firstName": "John", "lastName": "Doe" }
 
-# Login — returns JWT token
-POST http://localhost:8080/api/auth/login
-{"email":"user@example.com","password":"secret"}
+# Login — returns JWT
+POST /api/auth/login
+{ "email": "user@example.com", "password": "secret" }
 ```
 
-### Workouts (JWT required)
+### Workouts
 
 ```bash
-# Create workout
-POST http://localhost:8080/api/workouts
-Authorization: Bearer <token>
-{"title":"Morning Cardio","type":"CARDIO","durationMinutes":30}
-
-# Get all workouts
-GET http://localhost:8080/api/workouts
-Authorization: Bearer <token>
+POST   /api/workouts          # Create workout
+GET    /api/workouts          # List all workouts
+PUT    /api/workouts/{id}     # Update workout
+DELETE /api/workouts/{id}     # Delete workout
 ```
 
-### AI Coaching
+### Nutrition
 
 ```bash
-# Basic coaching advice
-POST http://localhost:8080/api/ai/chat
-Authorization: Bearer <token>
-{"prompt":"My legs are sore after leg day. What should I do?"}
-
-# Contextual coaching (with workout history)
-POST http://localhost:8080/api/ai/coach
-Authorization: Bearer <token>
-{
-  "prompt": "What should I train next?",
-  "recentWorkoutCount": 5,
-  "avgWorkoutMinutes": 45,
-  "lastWorkoutType": "STRENGTH"
-}
+POST   /api/nutrition         # Log a meal
+GET    /api/nutrition         # List all meals
+DELETE /api/nutrition/{id}    # Delete meal
 ```
 
 ### Analytics
 
 ```bash
-# Daily summary (aggregates workouts + nutrition)
-GET http://localhost:8080/api/analytics/summary
-Authorization: Bearer <token>
+GET /api/analytics/summary    # Aggregated daily stats (workouts + nutrition)
+```
+
+### AI Coaching
+
+```bash
+# Conversational AI
+POST /api/ai/chat
+{ "message": "My legs are sore. What should I do?" }
+
+# Context-aware coaching
+POST /api/ai/coach
+{ "prompt": "What should I train next?", "recentWorkoutCount": 5, "lastWorkoutType": "STRENGTH" }
+```
+
+### User Profile
+
+```bash
+GET  /api/users/profile       # Get profile
+PUT  /api/users/profile       # Update profile (weight, height, goals)
 ```
 
 ---
 
-## Running Tests
+## ☁️ Deployment
+
+### Frontend → Vercel
+
+The frontend is deployed on **Vercel** with SPA rewrite rules (`vercel.json`) to handle client-side routing.
 
 ```bash
-# Unit tests only (fast — no Docker needed)
-mvn test -pl workout-service
+cd frontend
+npm run build         # Outputs to dist/
+# Push to GitHub → Vercel auto-deploys
+```
 
-# Integration tests (requires Docker for Testcontainers)
-mvn verify -pl workout-service
+Environment variable to set in Vercel dashboard:
+```
+VITE_API_URL=<your-railway-backend-url>
+```
 
-# All tests across all modules
+### Backend → Railway
+
+The backend Docker image is built from `backend/monolith-service/Dockerfile` and deployed on **Railway** via `railway.toml`.
+
+```toml
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "monolith-service/Dockerfile"
+
+[deploy]
+startCommand = "java -Dspring.profiles.active=postgresql -jar app.jar"
+healthcheckPath = "/actuator/health"
+```
+
+Environment variables to set in Railway:
+```
+DATABASE_URL=<neon-postgres-url>
+GROQ_API_KEY=<your-groq-key>
+JWT_SECRET=<random-secret>
+FRONTEND_URL=https://fitness-tracker-full-stack-applicat.vercel.app
+```
+
+### Alternative — Kubernetes (Self-Hosted)
+
+```bash
+kubectl apply -f backend/k8s/namespace.yml
+kubectl apply -f backend/k8s/config/
+kubectl apply -f backend/k8s/services/
+kubectl apply -f backend/k8s/ingress.yml
+
+kubectl get pods -n fitness-tracker
+```
+
+---
+
+## 🧪 Running Tests
+
+```bash
+cd backend
+
+# Unit + Integration tests
+mvn test -pl monolith-service
+
+# All modules
 mvn test
 ```
 
-### Test Coverage
+---
 
-| Test Type | Tool | Location |
-|-----------|------|----------|
-| Unit tests | JUnit 5 + Mockito | `workout-service/src/test/.../service/` |
-| Repository tests | @DataJpaTest + H2 | `workout-service/src/test/.../repository/` |
-| Integration tests | Testcontainers + PostgreSQL | `workout-service/src/test/.../controller/` |
-| AI mock tests | WireMock | `ai-service/src/test/.../service/` |
+## 💡 Design Decisions
+
+### Monolith over Microservices
+The original design used 5 separate Spring Boot microservices + an API gateway. For Railway's single-service deployment model and portfolio simplicity, they were consolidated into a single **well-structured monolith** with clean package-level domain separation. The architecture can be split back out into microservices at any time.
+
+### Groq API over OpenAI
+- **14,400 free requests/day** — sufficient for a portfolio project
+- Ultra-low latency via custom LPU inference hardware
+- OpenAI-compatible API format — swap-in ready
+
+### Caffeine Cache over Redis
+- For a single-node deployment, in-memory Caffeine cache is simpler and faster than a remote Redis instance
+- Eliminates a runtime dependency for the Railway free tier
+
+### JWT + Stateless Auth
+- Tokens are stateless — no server-side session storage needed
+- Spring Security filter validates on every request before routing to controllers
+
+### Vite + React SPA
+- Fast HMR in development, optimised production bundle
+- `vercel.json` rewrite rule (`/* → /index.html`) ensures React Router handles all navigation client-side
 
 ---
 
-## Kubernetes Deployment
+## 🖥️ Screenshots
 
-```bash
-# Create namespace + apply all manifests
-./k8s/deploy.sh
-
-# Or manually
-kubectl apply -f k8s/namespace.yml
-kubectl apply -f k8s/config/secrets-and-configmap.yml
-kubectl apply -f k8s/services/
-kubectl apply -f k8s/ingress.yml
-
-# Check status
-kubectl get pods -n fitness-tracker
-kubectl get hpa -n fitness-tracker
-```
-
-> ⚠️ **Before deploying:** Update `k8s/config/secrets-and-configmap.yml` with real values, or use:
-> ```bash
-> kubectl create secret generic fitness-secrets --from-env-file=.env -n fitness-tracker
-> ```
+| Dashboard | FitCoach AI | Workout Log |
+|-----------|------------|-------------|
+| Animated progress rings, stats cards, and charts | Full markdown AI responses with context | Log exercises by type with duration |
 
 ---
 
-## Key Design Decisions
+## 📄 License
 
-### Why three databases?
-- **PostgreSQL** — Structured relational data (users, workouts, nutrition). ACID compliance, joins.
-- **Redis** — Sub-millisecond TTL-based storage. Rate limit counters, AI response cache.
-- **MongoDB** — Variable-structure AI interaction logs. High write volume, no fixed schema.
-
-### Why Groq over OpenAI?
-- Generous free tier (14,400 req/day), extremely low latency via custom LPU hardware, identical API format.
-
-### Why Testcontainers over H2?
-- H2 doesn't reproduce PostgreSQL-specific behaviour (constraints, dialect, index). Testcontainers runs the real engine.
-
-### JWT token lifecycle
-- Tokens are stateless (no server-side storage). Logout invalidates via Redis blacklist.
-- The gateway validates on every request before routing.
+MIT — free to use for personal and portfolio projects.
 
 ---
 
-## Project Structure
-
-```
-fitness-tracker/
-├── .github/workflows/ci.yml     # GitHub Actions CI/CD pipeline
-├── gateway/                     # Spring Cloud Gateway
-├── user-service/                # Auth and user management
-├── workout-service/             # Exercise logging
-│   └── src/test/                # Unit + Integration + Repository tests
-├── nutrition-service/           # Meal tracking
-├── analytics-service/           # Aggregation and summaries
-├── ai-service/                  # Groq AI integration
-│   └── src/test/                # WireMock tests
-├── k8s/                         # Kubernetes manifests
-│   ├── namespace.yml
-│   ├── ingress.yml
-│   ├── config/                  # Secrets + ConfigMap
-│   └── services/                # Deployment + Service + HPA per microservice
-├── docker-compose.yml           # Local development stack
-├── .env.example                 # Environment variable template
-└── pom.xml                      # Maven multi-module parent
-```
+<div align="center">
+  Made with ❤️ by <a href="https://github.com/spidyraj">Divyanshu</a>
+</div>
