@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
@@ -127,7 +128,11 @@ public class GroqService {
                 })
                 .onErrorResume(ex -> {
                     String errorType = ex.getClass().getSimpleName();
-                    log.error("Groq API error for user {}: {} - {}", userId, errorType, ex.getMessage());
+                    String responseBody = "";
+                    if (ex instanceof WebClientResponseException wcre) {
+                        responseBody = wcre.getResponseBodyAsString();
+                    }
+                    log.error("Groq API error for user {}: {} - {} | Response Body: {}", userId, errorType, ex.getMessage(), responseBody);
 
                     if (ex.getMessage() != null && ex.getMessage().contains("401")) {
                         return Mono.just("⚠️ Invalid API key. Please check your GROQ_API_KEY in the .env file.");
@@ -138,7 +143,12 @@ public class GroqService {
                     } else if (ex.getMessage() != null && ex.getMessage().contains("Connection refused")) {
                         return Mono.just("🔌 Cannot reach the Groq API. Please check your internet connection.");
                     }
-                    return Mono.just("🤖 FitCoach encountered an issue: " + ex.getMessage() +
+                    
+                    String detailMsg = ex.getMessage();
+                    if (!responseBody.isEmpty()) {
+                        detailMsg += "\nGroq Server Response Details:\n" + responseBody;
+                    }
+                    return Mono.just("🤖 FitCoach encountered an issue: " + detailMsg +
                                      "\n\nPlease verify your GROQ_API_KEY is valid at https://console.groq.com");
                 });
     }

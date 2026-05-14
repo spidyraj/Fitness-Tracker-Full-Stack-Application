@@ -11,7 +11,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-// v1.1.0 — Neon cold-start fix: HikariCP init-fail-timeout=-1
+// v1.2.0 — Groq model migration to llama-3.1-8b-instant & descriptive error log extraction
 @SpringBootApplication(exclude = {
     MongoAutoConfiguration.class, 
     MongoDataAutoConfiguration.class,
