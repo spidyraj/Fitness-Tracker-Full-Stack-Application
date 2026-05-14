@@ -1,6 +1,6 @@
 [build]
 builder = "DOCKERFILE"
-dockerfilePath = "backend/monolith-service/Dockerfile"
+dockerfilePath = "monolith-service/Dockerfile"
 
 [deploy]
 startCommand = "java -jar app.jar"
