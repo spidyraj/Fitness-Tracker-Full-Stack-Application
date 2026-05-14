@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import api from '../services/api';
 import { Bot, Send, User, Sparkles, Trash2, Download } from 'lucide-react';
 import './FitCoach.css';
