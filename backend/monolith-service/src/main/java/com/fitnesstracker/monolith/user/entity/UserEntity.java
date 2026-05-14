@@ -59,6 +59,20 @@ public class UserEntity {
     @Column
     private String activityLevel;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private FitnessLevel fitnessLevel = FitnessLevel.BEGINNER;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Gender gender;
+
+    @Column
+    private Integer targetCalories;
+
+    @Column
+    private Double targetWeightKg;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -69,6 +83,14 @@ public class UserEntity {
 
     public enum Role {
         USER, ADMIN
+    }
+
+    public enum FitnessLevel {
+        BEGINNER, INTERMEDIATE, ADVANCED
+    }
+
+    public enum Gender {
+        MALE, FEMALE, OTHER
     }
 
     // ─── Constructors ────────────────────────────────────────────────────────
@@ -87,11 +109,15 @@ public class UserEntity {
     public static class Builder {
         private String firstName, lastName, email, password;
         private Role role;
+        private FitnessLevel fitnessLevel;
+        private Gender gender;
         public Builder firstName(String v) { this.firstName = v; return this; }
         public Builder lastName(String v)  { this.lastName  = v; return this; }
         public Builder email(String v)     { this.email     = v; return this; }
         public Builder password(String v)  { this.password  = v; return this; }
         public Builder role(Role v)        { this.role      = v; return this; }
+        public Builder fitnessLevel(FitnessLevel v) { this.fitnessLevel = v; return this; }
+        public Builder gender(Gender v)    { this.gender    = v; return this; }
         public UserEntity build()          { return new UserEntity(this); }
     }
 
@@ -107,6 +133,10 @@ public class UserEntity {
     public Double getHeightCm()     { return heightCm; }
     public String getFitnessGoal()  { return fitnessGoal; }
     public String getActivityLevel() { return activityLevel; }
+    public FitnessLevel getFitnessLevel() { return fitnessLevel; }
+    public Gender getGender()       { return gender; }
+    public Integer getTargetCalories() { return targetCalories; }
+    public Double getTargetWeightKg()  { return targetWeightKg; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
 
@@ -121,4 +151,8 @@ public class UserEntity {
     public void setHeightCm(Double v)       { this.heightCm = v; }
     public void setFitnessGoal(String v)    { this.fitnessGoal = v; }
     public void setActivityLevel(String v)  { this.activityLevel = v; }
+    public void setFitnessLevel(FitnessLevel v) { this.fitnessLevel = v; }
+    public void setGender(Gender v)         { this.gender = v; }
+    public void setTargetCalories(Integer v){ this.targetCalories = v; }
+    public void setTargetWeightKg(Double v) { this.targetWeightKg = v; }
 }

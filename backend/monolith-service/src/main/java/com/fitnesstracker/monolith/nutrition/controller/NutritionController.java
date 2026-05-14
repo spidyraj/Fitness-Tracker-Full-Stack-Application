@@ -26,7 +26,6 @@ public class NutritionController {
     public ResponseEntity<NutritionResponse> logNutrition(
             @RequestAttribute("userId") Long userId,
             @Valid @RequestBody NutritionRequest request) {
-        
         return ResponseEntity.status(HttpStatus.CREATED).body(nutritionService.logNutrition(userId, request));
     }
 
@@ -41,6 +40,15 @@ public class NutritionController {
             @PathVariable Long id,
             @RequestAttribute("userId") Long userId) {
         return ResponseEntity.ok(nutritionService.getNutritionLogById(id, userId));
+    }
+
+    // ─── FIX: PUT endpoint was missing — the service had updateNutritionLog() but no controller route ───
+    @PutMapping("/{id}")
+    public ResponseEntity<NutritionResponse> updateNutritionLog(
+            @PathVariable Long id,
+            @RequestAttribute("userId") Long userId,
+            @Valid @RequestBody NutritionRequest request) {
+        return ResponseEntity.ok(nutritionService.updateNutritionLog(id, userId, request));
     }
 
     @DeleteMapping("/{id}")

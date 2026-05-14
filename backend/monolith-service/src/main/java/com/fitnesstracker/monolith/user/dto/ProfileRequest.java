@@ -1,5 +1,7 @@
 package com.fitnesstracker.monolith.user.dto;
 
+import com.fitnesstracker.monolith.user.entity.UserEntity.FitnessLevel;
+import com.fitnesstracker.monolith.user.entity.UserEntity.Gender;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
@@ -12,5 +14,9 @@ public record ProfileRequest(
         @Positive Double weightKg,
         @Positive Double heightCm,
         String fitnessGoal,
-        String activityLevel
+        String activityLevel,
+        FitnessLevel fitnessLevel,
+        Gender gender,
+        Integer targetCalories,
+        Double targetWeightKg
 ) {}

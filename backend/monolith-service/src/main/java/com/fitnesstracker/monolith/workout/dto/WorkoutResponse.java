@@ -12,5 +12,6 @@ public record WorkoutResponse(
         Integer durationMinutes,
         LocalDateTime workoutDate,
         WorkoutType type,
+        Integer caloriesBurned,
         LocalDateTime createdAt
 ) {}

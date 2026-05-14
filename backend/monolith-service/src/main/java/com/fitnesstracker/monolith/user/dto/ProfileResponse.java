@@ -1,5 +1,8 @@
 package com.fitnesstracker.monolith.user.dto;
 
+import com.fitnesstracker.monolith.user.entity.UserEntity.FitnessLevel;
+import com.fitnesstracker.monolith.user.entity.UserEntity.Gender;
+
 import java.time.LocalDateTime;
 
 /**
@@ -15,6 +18,10 @@ public record ProfileResponse(
         Double heightCm,
         String fitnessGoal,
         String activityLevel,
+        FitnessLevel fitnessLevel,
+        Gender gender,
+        Integer targetCalories,
+        Double targetWeightKg,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {}

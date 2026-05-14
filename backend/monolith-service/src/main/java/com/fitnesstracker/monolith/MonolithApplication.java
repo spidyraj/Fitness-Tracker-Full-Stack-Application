@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.mongo.MongoReactiveAutoConfigurati
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(exclude = {
     MongoAutoConfiguration.class, 
@@ -17,11 +18,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
     MongoReactiveDataAutoConfiguration.class,
     org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class,
     org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration.class,
-    org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration.class,
     org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration.class
 })
 @EntityScan("com.fitnesstracker.monolith.*.entity")
 @EnableJpaRepositories("com.fitnesstracker.monolith.*.repository")
+@EnableCaching
+@EnableScheduling
 public class MonolithApplication {
 
     public static void main(String[] args) {

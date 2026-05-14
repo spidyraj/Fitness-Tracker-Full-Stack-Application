@@ -63,7 +63,7 @@ public class NutritionEntity {
     private LocalDateTime updatedAt;
 
     public enum MealType {
-        BREAKFAST, LUNCH, DINNER, SNACK
+        BREAKFAST, LUNCH, DINNER, SNACK, PRE_WORKOUT, POST_WORKOUT
     }
 
     public NutritionEntity() {}
