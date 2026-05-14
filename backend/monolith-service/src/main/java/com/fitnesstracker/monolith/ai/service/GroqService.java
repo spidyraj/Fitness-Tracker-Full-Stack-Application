@@ -41,7 +41,7 @@ public class GroqService {
             WebClient.Builder webClientBuilder,
             @Value("${groq.api.key:}") String apiKey,
             @Value("${groq.api.url:https://api.groq.com/openai/v1/chat/completions}") String apiUrl,
-            @Value("${groq.api.model:llama3-8b-8192}") String model
+            @Value("${groq.api.model:llama-3.1-8b-instant}") String model
     ) {
         this.webClient = webClientBuilder.build();
         this.apiKey = apiKey;
